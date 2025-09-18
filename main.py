@@ -4,47 +4,54 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from io import BytesIO
 from PIL import Image
-from rembg import remove # Make sure to install this library
-
-# This is a good practice to avoid errors if the templates/ or static/ directories are not found.
-import os
+from rembg import remove # Assurez-vous d'avoir 'rembg' installé (pip install rembg)
 
 app = FastAPI()
 
-# Mount the static directory to serve CSS and JS files
+# Montage des fichiers statiques (CSS, JS, images)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Initialize Jinja2Templates
+# Configuration des templates Jinja2
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     """
-    Renders the main HTML page for the ChromaKey application.
+    Affiche la page d'accueil avec l'interface utilisateur.
     """
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/remove-bg/")
 async def remove_background(file: UploadFile = File(...)):
     """
-    API endpoint to remove the background of an uploaded image.
+    Endpoint pour la suppression de l'arrière-plan.
+    Reçoit une image, supprime le fond et renvoie l'image PNG transparente.
     """
     try:
-        # Read the image data from the uploaded file
+        # Lire l'image uploadée
         image_data = await file.read()
         input_image = Image.open(BytesIO(image_data))
 
-        # Use the 'rembg' library to remove the background.
-        output_image = remove(input_image)
+        # Utilisation de la fonction remove() avec des paramètres
+        # pour améliorer la qualité.
+        
+        output_image = remove(
+            input_image,
+            alpha_matting=True,
+            alpha_matting_foreground_threshold=240, 
+            alpha_matting_background_threshold=10, 
+            alpha_matting_erode_size=10, 
+        )
 
-        # Save the resulting image to a BytesIO buffer
+        # Sauvegarder l'image résultante dans un buffer
         buffer = BytesIO()
         output_image.save(buffer, format="PNG")
         buffer.seek(0)
-        
-        # Return the image as a StreamingResponse, which is correct for in-memory data.
+
+        # Renvoyer l'image en tant que StreamingResponse
         return StreamingResponse(buffer, media_type="image/png")
 
     except Exception as e:
-        # Handle potential errors during image processing
-        return {"error": str(e)}
+        # Gérer les erreurs de manière plus informative
+        print(f"Erreur lors du traitement de l'image: {e}")
+        return {"error": f"Une erreur est survenue lors du traitement de l'image: {e}"}
