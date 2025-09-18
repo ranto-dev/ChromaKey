@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChromaKey - Suppression d'arrière-plan</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-900 text-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-4xl border border-gray-700">
+        <h1 class="text-3xl font-bold text-center text-blue-400 mb-8 flex items-center justify-center">
+            <svg class="w-8 h-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                </path>
+            </svg>
+            ChromaKey
+        </h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600 flex flex-col items-center justify-center">
+                <h2 class="text-xl font-semibold mb-4 text-blue-300">Image originale</h2>
+                <div id="drop-area"
+                    class="w-full h-48 border-2 border-dashed border-gray-500 rounded-lg flex items-center justify-center text-gray-400 cursor-pointer hover:border-blue-400 transition-colors duration-200">
+                    <p class="text-center">Glisser-déposer votre image ici</p>
+                    <input type="file" id="fileInput" class="hidden" accept="image/*">
+                </div>
+                <img id="original-image-preview" src="/static/img/placeholder.png" alt="Prévisualisation originale"
+                    class="mt-4 max-h-48 rounded-lg border border-gray-600 object-contain hidden">
+            </div>
+
+            <div class="bg-gray-700 p-6 rounded-lg border border-gray-600 flex flex-col items-center justify-center">
+                <h2 class="text-xl font-semibold mb-4 text-green-300">Image résultante</h2>
+                <img id="result-image" src="/static/img/placeholder.png" alt="Résultat"
+                    class="w-full h-48 object-contain bg-gray-600 rounded-lg border border-gray-500">
+                <button id="download-btn"
+                    class="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                    disabled>
+                    Télécharger (PNG)
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-gray-700 p-6 rounded-lg border border-gray-600">
+            <h2 class="text-xl font-semibold mb-4 text-purple-300">Paramètres</h2>
+            <div class="flex flex-col space-y-4">
+                <label for="threshold" class="block text-gray-300">Seuil :</label>
+                <input type="range" id="threshold" name="threshold" min="0" max="100" value="50"
+                    class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer range-xl">
+                <label for="smoothness" class="block text-gray-300">Lissage :</label>
+                <input type="range" id="smoothness" name="smoothness" min="0" max="100" value="50"
+                    class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer range-xl">
+            </div>
+            <button id="process-btn"
+                class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Supprimer l'arrière-plan
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/javascript/script.js"></script>
+</body>
+
+</html>
